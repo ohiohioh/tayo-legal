@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>塔友 註冊成功</title>
+  <meta name="description" content="塔友（Tayo）電子郵件驗證完成，請回到 App 登入。">
+  <style>
+    :root {
+      --bg: #f7f4ef;
+      --card: #fffdf8;
+      --ink: #2b2430;
+      --muted: #6b6173;
+      --line: #e4dcd0;
+      --accent: #6b4c8a;
+      --accent-soft: #f1e9f8;
+      --danger: #9b2c2c;
+      --danger-bg: #fdecec;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px 16px;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: "PingFang TC", "Noto Sans TC", "Microsoft JhengHei", sans-serif;
+      line-height: 1.75;
+    }
+    .card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 36px 24px 28px;
+      text-align: center;
+    }
+    .eyebrow {
+      letter-spacing: 0.18em;
+      font-size: 12px;
+      color: var(--accent);
+      text-transform: uppercase;
+    }
+    .icon {
+      width: 64px;
+      height: 64px;
+      margin: 16px auto 8px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-size: 32px;
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+    .icon.error { background: var(--danger-bg); color: var(--danger); }
+    h1 { margin: 8px 0 6px; font-size: 26px; line-height: 1.3; }
+    p { margin: 6px 0; }
+    .muted { color: var(--muted); font-size: 14px; }
+    .steps {
+      text-align: left;
+      background: var(--accent-soft);
+      border-radius: 12px;
+      padding: 14px 16px 14px 36px;
+      margin: 20px 0;
+    }
+    .en {
+      margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+    .en h2 { font-size: 18px; margin: 0 0 4px; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="eyebrow">Tayo / 塔友</div>
+
+    <div id="success">
+      <div class="icon">✓</div>
+      <h1>註冊成功！</h1>
+      <p>您的電子郵件已完成驗證。</p>
+      <ol class="steps">
+        <li>關閉此頁面</li>
+        <li>回到「塔友」App</li>
+        <li>使用剛剛註冊的電子郵件與密碼登入</li>
+      </ol>
+      <p class="muted">此頁面不需要任何操作，可以直接關閉。</p>
+      <div class="en">
+        <h2>Email confirmed</h2>
+        <p class="muted">Your account is ready. Please return to the Tayo app and sign in with your email and password.</p>
+      </div>
+    </div>
+
+    <div id="failure" hidden>
+      <div class="icon error">!</div>
+      <h1>驗證連結無效</h1>
+      <p>此連結可能已過期或已使用過。</p>
+      <ol class="steps">
+        <li>回到「塔友」App 嘗試直接登入</li>
+        <li>若無法登入，請在 App 內重新寄送驗證信</li>
+      </ol>
+      <p class="muted">仍有問題請來信 <a href="mailto:kccazure2@gmail.com">kccazure2@gmail.com</a></p>
+      <p class="muted" id="error-detail"></p>
+      <div class="en">
+        <h2>Link invalid or expired</h2>
+        <p class="muted">Please return to the Tayo app and try signing in, or request a new confirmation email.</p>
+      </div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      // Supabase 會把結果放在 hash（implicit）或 query（PKCE）
+      var params = new URLSearchParams(window.location.hash.slice(1));
+      var query = new URLSearchParams(window.location.search);
+      var error = params.get('error') || query.get('error');
+      var description = params.get('error_description') || query.get('error_description');
+
+      if (error) {
+        document.getElementById('success').hidden = true;
+        document.getElementById('failure').hidden = false;
+        if (description) {
+          document.getElementById('error-detail').textContent = description.replace(/\+/g, ' ');
+        }
+      }
+
+      // 不在網址列留下 token
+      if (window.location.hash || window.location.search) {
+        history.replaceState(null, '', window.location.pathname);
+      }
+    })();
+  </script>
+</body>
+</html>
